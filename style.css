@@ -312,7 +312,7 @@ body::before {
 }
 
 .hero h1 .gradient-text {
-  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end), #c084fc);
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -482,7 +482,7 @@ section {
   width: 100%;
   padding: 12px;
   box-sizing: border-box;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease;
+  transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s ease;
   opacity: 0.35;
   transform: scale(0.95);
 }
@@ -704,6 +704,11 @@ section {
   font-size: 14px;
   color: var(--text-secondary);
   line-height: 1.6;
+  min-height: 68px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
   transition: color var(--transition-base);
 }
 
@@ -878,9 +883,8 @@ section {
 
 .pricing-card:hover {
   border-color: var(--accent);
-  transform: translateY(-10px) scale(1.04);
+  transform: translateY(-8px);
   box-shadow: var(--shadow-lg), 0 0 25px var(--accent-glow);
-  background: linear-gradient(180deg, var(--bg-card) 0%, rgba(24, 24, 27, 0.8) 100%);
   opacity: 1 !important;
   z-index: 2;
 }
@@ -902,7 +906,7 @@ section {
 }
 
 .pricing-card.popular:hover {
-  transform: translateY(-10px) scale(1.04);
+  transform: translateY(-8px);
   box-shadow: var(--shadow-lg), 0 0 35px var(--accent-glow);
 }
 
@@ -1304,7 +1308,7 @@ section {
     left: 0;
     right: 0;
     flex-direction: column;
-    background: rgba(9, 9, 11, 0.95);
+    background: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(20px);
     padding: 24px;
     gap: 16px;
@@ -1319,8 +1323,24 @@ section {
     display: block;
   }
 
+  /* Centered Hero on Mobile */
+  .hero {
+    text-align: center;
+    padding: 100px 0 60px;
+  }
+
+  .hero-content {
+    margin: 0 auto;
+  }
+
+  .hero-badge {
+    margin-inline: auto;
+  }
+
   .hero-stats {
     gap: 32px;
+    justify-content: center;
+    align-items: center;
   }
 
   .hero-stat .number {
@@ -1329,15 +1349,25 @@ section {
 
   .hero-actions {
     flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
   }
 
   .hero-actions .btn {
+    width: 100%;
     justify-content: center;
   }
 
   .contact-links {
     flex-direction: column;
     align-items: center;
+  }
+
+  /* Carousel Arrows Mobile overlay click fix */
+  .carousel-arrow {
+    z-index: 99 !important;
   }
 }
 

@@ -250,6 +250,8 @@ function initProjectsCarousel() {
   let currentIndex = 0;
   let isDragging = false;
   let startX = 0;
+  let startY = 0;
+  let isMovingHorizontal = false;
 
   function updateCarousel(index) {
     if (index < 0) index = slides.length - 1;
@@ -259,7 +261,8 @@ function initProjectsCarousel() {
 
     const amountToMove = slides[currentIndex].offsetLeft;
     
-    track.style.transition = 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+    // Soft, premium glide transition curve
+    track.style.transition = 'transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)';
     track.style.transform = `translateX(-${amountToMove}px)`;
 
     // Toggle active classes on slides
@@ -285,10 +288,16 @@ function initProjectsCarousel() {
     return event.type.includes('mouse') ? event.clientX : event.touches[0].clientX;
   }
 
+  function getPositionY(event) {
+    return event.type.includes('mouse') ? event.clientY : event.touches[0].clientY;
+  }
+
   function dragStart(event) {
     isDragging = true;
     startX = getPositionX(event);
-    track.style.transition = 'none';
+    startY = getPositionY(event);
+    isMovingHorizontal = false;
+    track.style.transition = 'none'; // instantaneous tracking
     if (event.type.includes('mouse')) {
       viewport.style.cursor = 'grabbing';
     }
@@ -298,10 +307,23 @@ function initProjectsCarousel() {
     if (!isDragging) return;
     
     const currentX = getPositionX(event);
-    const diff = currentX - startX;
+    const currentY = getPositionY(event);
     
-    const currentTranslate = -slides[currentIndex].offsetLeft + diff;
-    track.style.transform = `translateX(${currentTranslate}px)`;
+    const diffX = currentX - startX;
+    const diffY = currentY - startY;
+
+    // Detect horizontal swipes early (threshold 10px) to lock vertical scroll
+    if (!isMovingHorizontal) {
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) {
+        isMovingHorizontal = true;
+      }
+    }
+
+    if (isMovingHorizontal) {
+      if (event.cancelable) event.preventDefault(); // Stop page scrolling
+      const currentTranslate = -slides[currentIndex].offsetLeft + diffX;
+      track.style.transform = `translateX(${currentTranslate}px)`;
+    }
   }
 
   function dragEnd(event) {
@@ -315,12 +337,17 @@ function initProjectsCarousel() {
       
     const diff = endX - startX;
 
-    if (diff < -60) {
-      updateCarousel(currentIndex + 1);
-    } else if (diff > 60) {
-      updateCarousel(currentIndex - 1);
+    if (isMovingHorizontal) {
+      // 60px swipe threshold
+      if (diff < -60) {
+        updateCarousel(currentIndex + 1);
+      } else if (diff > 60) {
+        updateCarousel(currentIndex - 1);
+      } else {
+        updateCarousel(currentIndex);
+      }
     } else {
-      updateCarousel(currentIndex);
+      updateCarousel(currentIndex); // Snap back if vertical or tiny swipe
     }
   }
 
@@ -342,9 +369,9 @@ function initProjectsCarousel() {
     });
   });
 
-  // Touch Events
+  // Touch Events (passive: false on move to allow preventDefault)
   viewport.addEventListener('touchstart', dragStart, { passive: true });
-  viewport.addEventListener('touchmove', dragMove, { passive: true });
+  viewport.addEventListener('touchmove', dragMove, { passive: false });
   viewport.addEventListener('touchend', dragEnd);
 
   // Mouse Events
