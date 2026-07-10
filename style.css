@@ -1220,32 +1220,50 @@ section {
 }
 
 .contact-link:hover {
-  color: var(--text-primary);
   transform: translateY(-4px);
 }
 
-.contact-link.telegram:hover {
+.contact-link.telegram {
+  background: #24A1DE;
+  color: #ffffff;
   border-color: #24A1DE;
-  background: rgba(36, 161, 222, 0.08);
-  box-shadow: 0 4px 20px rgba(36, 161, 222, 0.2);
+}
+.contact-link.telegram:hover {
+  background: #1e87bb;
+  border-color: #1e87bb;
+  box-shadow: 0 4px 20px rgba(36, 161, 222, 0.4);
 }
 
+.contact-link.instagram {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  color: #ffffff;
+  border-color: transparent;
+}
 .contact-link.instagram:hover {
-  border-color: #E1306C;
-  background: rgba(225, 48, 108, 0.08);
-  box-shadow: 0 4px 20px rgba(225, 48, 108, 0.25);
+  opacity: 0.9;
+  box-shadow: 0 4px 20px rgba(225, 48, 108, 0.4);
 }
 
+.contact-link.x-twitter {
+  background: #111111;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.15);
+}
 .contact-link.x-twitter:hover {
-  border-color: #ffffff;
-  background: rgba(255, 255, 255, 0.05);
-  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
+  background: #222222;
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
 }
 
+.contact-link.github {
+  background: #24292e;
+  color: #ffffff;
+  border-color: #24292e;
+}
 .contact-link.github:hover {
-  border-color: #f0f6fc;
-  background: rgba(240, 246, 252, 0.05);
-  box-shadow: 0 4px 20px rgba(240, 246, 252, 0.1);
+  background: #2f363d;
+  border-color: #2f363d;
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
 }
 
 .contact-link svg {
