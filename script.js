@@ -9,32 +9,53 @@ const loader = document.getElementById('pageLoader');
 const loaderBar = document.getElementById('loaderBar');
 const loaderCounter = document.getElementById('loaderCounter');
 
-if (loader) {
-  let progress = 0;
-  const duration = 1200; // 1.2 seconds loading time
-  const intervalTime = 15;
-  const step = 100 / (duration / intervalTime);
+let progress = 0;
+let loaded = false;
 
-  const timer = setInterval(() => {
-    progress += step;
+// Gradually increment to 90% while loading page resources
+const slowTimer = setInterval(() => {
+  if (progress < 90) {
+    progress += Math.random() * 2 + 1;
+    if (progress > 90) progress = 90;
+    updateLoader(progress);
+  }
+}, 60);
+
+function updateLoader(value) {
+  const displayProgress = Math.floor(value);
+  if (loaderBar) loaderBar.style.width = `${displayProgress}%`;
+  if (loaderCounter) loaderCounter.textContent = displayProgress.toString().padStart(2, '0');
+}
+
+function finishLoading() {
+  clearInterval(slowTimer);
+  loaded = true;
+  
+  // Fast sweep to 100%
+  const fastTimer = setInterval(() => {
+    progress += 5;
     if (progress >= 100) {
       progress = 100;
-      clearInterval(timer);
-      
-      if (loaderBar) loaderBar.style.width = '100%';
-      if (loaderCounter) loaderCounter.textContent = '100';
+      clearInterval(fastTimer);
+      updateLoader(100);
       
       setTimeout(() => {
-        loader.classList.add('exit');
+        if (loader) loader.classList.add('exit');
         document.body.style.overflow = ''; // Enable scrolling
       }, 250);
     } else {
-      const displayProgress = Math.floor(progress);
-      if (loaderBar) loaderBar.style.width = `${displayProgress}%`;
-      if (loaderCounter) loaderCounter.textContent = displayProgress.toString().padStart(2, '0');
+      updateLoader(progress);
     }
-  }, intervalTime);
+  }, 15);
 }
+
+// Window load trigger
+window.addEventListener('load', finishLoading);
+
+// Safety fallback
+setTimeout(() => {
+  if (!loaded) finishLoading();
+}, 5000);
 
 // ── Language System ──
 const translations = {
@@ -165,22 +186,39 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 
-// ── Project Card Tilt Effect (subtle) ──
+// ── Project Card Tilt Effect (subtle & optimized with rAF) ──
 document.querySelectorAll('.project-card').forEach(card => {
-  card.addEventListener('mousemove', (e) => {
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    const rotateX = (y - centerY) / centerY * -3;
-    const rotateY = (x - centerX) / centerX * 3;
+  let ticking = false;
+  let mouseX = 0;
+  let mouseY = 0;
 
-    card.style.transform = `translateY(-8px) perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+  card.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        const rect = card.getBoundingClientRect();
+        const x = mouseX - rect.left;
+        const y = mouseY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = (y - centerY) / centerY * -3;
+        const rotateY = (x - centerX) / centerX * 3;
+
+        card.style.transform = `translateY(-8px) perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        ticking = false;
+      });
+
+      ticking = true;
+    }
   });
 
   card.addEventListener('mouseleave', () => {
-    card.style.transform = '';
+    window.requestAnimationFrame(() => {
+      card.style.transform = '';
+      ticking = false;
+    });
   });
 });
 
@@ -206,8 +244,7 @@ function initProjectsCarousel() {
 
     currentIndex = index;
 
-    const paddingLeft = parseInt(window.getComputedStyle(viewport).paddingLeft) || 0;
-    const amountToMove = slides[currentIndex].offsetLeft - paddingLeft;
+    const amountToMove = slides[currentIndex].offsetLeft;
     
     track.style.transition = 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
     track.style.transform = `translateX(-${amountToMove}px)`;
@@ -250,8 +287,7 @@ function initProjectsCarousel() {
     const currentX = getPositionX(event);
     const diff = currentX - startX;
     
-    const paddingLeft = parseInt(window.getComputedStyle(viewport).paddingLeft) || 0;
-    const currentTranslate = -(slides[currentIndex].offsetLeft - paddingLeft) + diff;
+    const currentTranslate = -slides[currentIndex].offsetLeft + diff;
     track.style.transform = `translateX(${currentTranslate}px)`;
   }
 
