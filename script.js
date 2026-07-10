@@ -192,10 +192,13 @@ function initProjectsCarousel() {
   const prevBtn = document.querySelector('.prev-arrow');
   const nextBtn = document.querySelector('.next-arrow');
   const dots = document.querySelectorAll('.indicator-dot');
+  const viewport = document.querySelector('.projects-carousel-viewport');
 
-  if (!track || slides.length === 0) return;
+  if (!track || slides.length === 0 || !viewport) return;
 
   let currentIndex = 0;
+  let isDragging = false;
+  let startX = 0;
 
   function updateCarousel(index) {
     if (index < 0) index = slides.length - 1;
@@ -203,9 +206,11 @@ function initProjectsCarousel() {
 
     currentIndex = index;
 
-    // Move track
-    const amountToMove = -100 * currentIndex;
-    track.style.transform = `translateX(${amountToMove}%)`;
+    const paddingLeft = parseInt(window.getComputedStyle(viewport).paddingLeft) || 0;
+    const amountToMove = slides[currentIndex].offsetLeft - paddingLeft;
+    
+    track.style.transition = 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+    track.style.transform = `translateX(-${amountToMove}px)`;
 
     // Toggle active classes on slides
     slides.forEach((slide, idx) => {
@@ -226,6 +231,50 @@ function initProjectsCarousel() {
     });
   }
 
+  function getPositionX(event) {
+    return event.type.includes('mouse') ? event.clientX : event.touches[0].clientX;
+  }
+
+  function dragStart(event) {
+    isDragging = true;
+    startX = getPositionX(event);
+    track.style.transition = 'none';
+    if (event.type.includes('mouse')) {
+      viewport.style.cursor = 'grabbing';
+    }
+  }
+
+  function dragMove(event) {
+    if (!isDragging) return;
+    
+    const currentX = getPositionX(event);
+    const diff = currentX - startX;
+    
+    const paddingLeft = parseInt(window.getComputedStyle(viewport).paddingLeft) || 0;
+    const currentTranslate = -(slides[currentIndex].offsetLeft - paddingLeft) + diff;
+    track.style.transform = `translateX(${currentTranslate}px)`;
+  }
+
+  function dragEnd(event) {
+    if (!isDragging) return;
+    isDragging = false;
+    viewport.style.cursor = 'grab';
+    
+    const endX = event.type.includes('mouse') 
+      ? event.clientX 
+      : (event.changedTouches && event.changedTouches[0] ? event.changedTouches[0].clientX : startX);
+      
+    const diff = endX - startX;
+
+    if (diff < -60) {
+      updateCarousel(currentIndex + 1);
+    } else if (diff > 60) {
+      updateCarousel(currentIndex - 1);
+    } else {
+      updateCarousel(currentIndex);
+    }
+  }
+
   if (prevBtn) {
     prevBtn.addEventListener('click', () => {
       updateCarousel(currentIndex - 1);
@@ -244,7 +293,22 @@ function initProjectsCarousel() {
     });
   });
 
-  // Initialize
+  // Touch Events
+  viewport.addEventListener('touchstart', dragStart, { passive: true });
+  viewport.addEventListener('touchmove', dragMove, { passive: true });
+  viewport.addEventListener('touchend', dragEnd);
+
+  // Mouse Events
+  viewport.addEventListener('mousedown', dragStart);
+  viewport.addEventListener('mousemove', dragMove);
+  viewport.addEventListener('mouseup', dragEnd);
+  viewport.addEventListener('mouseleave', dragEnd);
+
+  // Window Resize
+  window.addEventListener('resize', () => {
+    updateCarousel(currentIndex);
+  });
+
   updateCarousel(0);
 }
 
