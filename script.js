@@ -3,23 +3,42 @@
    ============================================ */
 
 // ── Page Preloader (Lumora Style) ──
-document.body.style.overflow = 'hidden';
-
 const loader = document.getElementById('pageLoader');
 const loaderBar = document.getElementById('loaderBar');
 const loaderCounter = document.getElementById('loaderCounter');
 
 let progress = 0;
 let loaded = false;
+let slowTimer;
 
-// Gradually increment to 90% while loading page resources
-const slowTimer = setInterval(() => {
-  if (progress < 90) {
-    progress += Math.random() * 2 + 1;
-    if (progress > 90) progress = 90;
-    updateLoader(progress);
+// Skip preloader on page refresh/update by checking sessionStorage
+if (sessionStorage.getItem('visited') && loader) {
+  loader.style.display = 'none';
+  document.body.style.overflow = '';
+} else {
+  // Lock scrolling for first-time loader
+  document.body.style.overflow = 'hidden';
+  if (loader) {
+    sessionStorage.setItem('visited', 'true');
+    
+    // Gradually increment to 90% while loading page resources
+    slowTimer = setInterval(() => {
+      if (progress < 90) {
+        progress += Math.random() * 2 + 1;
+        if (progress > 90) progress = 90;
+        updateLoader(progress);
+      }
+    }, 60);
+    
+    // Window load trigger
+    window.addEventListener('load', finishLoading);
+    
+    // Safety fallback
+    setTimeout(() => {
+      if (!loaded) finishLoading();
+    }, 5000);
   }
-}, 60);
+}
 
 function updateLoader(value) {
   const displayProgress = Math.floor(value);
@@ -28,8 +47,10 @@ function updateLoader(value) {
 }
 
 function finishLoading() {
-  clearInterval(slowTimer);
+  if (slowTimer) clearInterval(slowTimer);
   loaded = true;
+  
+  if (!loader) return;
   
   // Fast sweep to 100%
   const fastTimer = setInterval(() => {
@@ -40,7 +61,7 @@ function finishLoading() {
       updateLoader(100);
       
       setTimeout(() => {
-        if (loader) loader.classList.add('exit');
+        loader.classList.add('exit');
         document.body.style.overflow = ''; // Enable scrolling
       }, 250);
     } else {
@@ -48,14 +69,6 @@ function finishLoading() {
     }
   }, 15);
 }
-
-// Window load trigger
-window.addEventListener('load', finishLoading);
-
-// Safety fallback
-setTimeout(() => {
-  if (!loaded) finishLoading();
-}, 5000);
 
 // ── Language System ──
 const translations = {
