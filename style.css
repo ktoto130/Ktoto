@@ -429,17 +429,46 @@ section {
 /* ============================================
    PROJECTS (Interactive Cards)
    ============================================ */
-.projects-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 32px;
+.projects-carousel-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
   margin-top: 56px;
+  gap: 24px;
+  width: 100%;
 }
 
-.projects-grid:has(.project-card:hover) .project-card:not(:hover) {
-  opacity: 0.25;
-  filter: blur(3px) grayscale(40%);
+.projects-carousel-viewport {
+  overflow: hidden;
+  width: 100%;
+  border-radius: var(--radius-lg);
+}
+
+.projects-carousel-track {
+  display: flex;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.project-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  padding: 12px;
+  box-sizing: border-box;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease;
+  opacity: 0.35;
   transform: scale(0.95);
+}
+
+.project-slide.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.project-slide .project-card {
+  margin: 0 auto;
+  max-width: 800px;
+  width: 100%;
 }
 
 .project-card {
@@ -448,16 +477,102 @@ section {
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  transition: opacity var(--transition-base), transform var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
   cursor: pointer;
 }
 
 .project-card:hover {
-  transform: translateY(-12px) scale(1.04);
+  transform: translateY(-8px);
   border-color: var(--accent);
   box-shadow: var(--shadow-lg), 0 0 25px var(--accent-glow);
-  opacity: 1 !important;
-  z-index: 2;
+}
+
+/* Carousel Arrows */
+.carousel-arrow {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-base);
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.carousel-arrow:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg-primary);
+  box-shadow: 0 0 20px var(--accent-glow);
+  transform: scale(1.08);
+}
+
+.carousel-arrow:active {
+  transform: scale(0.95);
+}
+
+.carousel-arrow svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Indicators */
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 32px;
+}
+
+.indicator-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  transition: var(--transition-base);
+}
+
+.indicator-dot.active {
+  background: var(--accent);
+  width: 24px;
+  border-radius: 4px;
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+
+@media (max-width: 768px) {
+  .projects-carousel-wrapper {
+    gap: 8px;
+  }
+  
+  .carousel-arrow {
+    width: 44px;
+    height: 44px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(24, 24, 27, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .carousel-arrow.prev-arrow {
+    left: 12px;
+  }
+  
+  .carousel-arrow.next-arrow {
+    right: 12px;
+  }
+  
+  .project-slide {
+    padding: 4px;
+  }
 }
 
 .project-card-image {

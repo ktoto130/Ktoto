@@ -185,8 +185,73 @@ document.querySelectorAll('.project-card').forEach(card => {
 });
 
 
+// ── Projects Carousel (Slider) ──
+function initProjectsCarousel() {
+  const track = document.getElementById('projectsTrack');
+  const slides = Array.from(track ? track.children : []);
+  const prevBtn = document.querySelector('.prev-arrow');
+  const nextBtn = document.querySelector('.next-arrow');
+  const dots = document.querySelectorAll('.indicator-dot');
+
+  if (!track || slides.length === 0) return;
+
+  let currentIndex = 0;
+
+  function updateCarousel(index) {
+    if (index < 0) index = slides.length - 1;
+    if (index >= slides.length) index = 0;
+
+    currentIndex = index;
+
+    // Move track
+    const amountToMove = -100 * currentIndex;
+    track.style.transform = `translateX(${amountToMove}%)`;
+
+    // Toggle active classes on slides
+    slides.forEach((slide, idx) => {
+      if (idx === currentIndex) {
+        slide.classList.add('active');
+      } else {
+        slide.classList.remove('active');
+      }
+    });
+
+    // Toggle active classes on dot indicators
+    dots.forEach((dot, idx) => {
+      if (idx === currentIndex) {
+        dot.classList.add('active');
+      } else {
+        dot.classList.remove('active');
+      }
+    });
+  }
+
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+      updateCarousel(currentIndex - 1);
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      updateCarousel(currentIndex + 1);
+    });
+  }
+
+  dots.forEach((dot, idx) => {
+    dot.addEventListener('click', () => {
+      updateCarousel(idx);
+    });
+  });
+
+  // Initialize
+  updateCarousel(0);
+}
+
+
 // ── Init ──
 document.addEventListener('DOMContentLoaded', () => {
   initLanguage();
   initScrollReveal();
+  initProjectsCarousel();
 });
