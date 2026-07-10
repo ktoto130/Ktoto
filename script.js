@@ -362,9 +362,30 @@ function initProjectsCarousel() {
 }
 
 
+// ── Ambient Mouse Light Leak (Spotlight) ──
+function initAmbientLight() {
+  const ambientBg = document.querySelector('.bg-ambient');
+  if (!ambientBg) return;
+
+  let ticking = false;
+
+  window.addEventListener('mousemove', (e) => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        ambientBg.style.setProperty('--mouse-x', `${e.clientX}px`);
+        ambientBg.style.setProperty('--mouse-y', `${e.clientY}px`);
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+}
+
+
 // ── Init ──
 document.addEventListener('DOMContentLoaded', () => {
   initLanguage();
   initScrollReveal();
   initProjectsCarousel();
+  initAmbientLight();
 });
