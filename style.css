@@ -66,6 +66,13 @@ html {
 body {
   font-family: var(--font-sans);
   background-color: var(--bg-primary);
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.008) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.008) 1px, transparent 1px),
+    radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.04) 0%, transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
+  background-size: 80px 80px, 80px 80px, 100% 100%, 100% 100%;
+  background-attachment: fixed;
   color: var(--text-primary);
   line-height: 1.6;
   overflow-x: hidden;
