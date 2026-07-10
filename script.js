@@ -352,15 +352,25 @@ function initProjectsCarousel() {
   }
 
   if (prevBtn) {
-    prevBtn.addEventListener('click', () => {
+    prevBtn.addEventListener('click', (e) => {
+      e.preventDefault();
       updateCarousel(currentIndex - 1);
     });
+    prevBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      updateCarousel(currentIndex - 1);
+    }, { passive: false });
   }
 
   if (nextBtn) {
-    nextBtn.addEventListener('click', () => {
+    nextBtn.addEventListener('click', (e) => {
+      e.preventDefault();
       updateCarousel(currentIndex + 1);
     });
+    nextBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      updateCarousel(currentIndex + 1);
+    }, { passive: false });
   }
 
   dots.forEach((dot, idx) => {
