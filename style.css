@@ -436,20 +436,28 @@ section {
   margin-top: 56px;
 }
 
+.projects-grid:has(.project-card:hover) .project-card:not(:hover) {
+  opacity: 0.45;
+  filter: blur(0.5px) grayscale(20%);
+  transform: scale(0.97);
+}
+
 .project-card {
   position: relative;
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  transition: var(--transition-base);
+  transition: opacity var(--transition-base), transform var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base);
   cursor: pointer;
 }
 
 .project-card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-10px) scale(1.02);
   border-color: var(--border-hover);
   box-shadow: var(--shadow-lg), var(--shadow-glow);
+  opacity: 1 !important;
+  z-index: 2;
 }
 
 .project-card-image {
@@ -629,13 +637,8 @@ section {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 16px;
-  color: var(--bg-primary);
+  object-fit: cover;
+  border: 1.5px solid var(--border-hover);
   flex-shrink: 0;
 }
 
@@ -690,6 +693,12 @@ section {
   align-items: stretch;
 }
 
+.pricing-grid:has(.pricing-card:hover) .pricing-card:not(:hover) {
+  opacity: 0.45;
+  filter: blur(0.5px);
+  transform: scale(0.97);
+}
+
 .pricing-card {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
@@ -698,14 +707,16 @@ section {
   display: flex;
   flex-direction: column;
   position: relative;
-  transition: var(--transition-base);
+  transition: opacity var(--transition-base), transform var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base);
 }
 
 .pricing-card:hover {
   border-color: var(--border-hover);
-  transform: translateY(-6px);
+  transform: translateY(-8px) scale(1.02);
   box-shadow: var(--shadow-md);
   background: linear-gradient(180deg, var(--bg-card) 0%, rgba(24, 24, 27, 0.8) 100%);
+  opacity: 1 !important;
+  z-index: 2;
 }
 
 /* Popular Plan styles */
@@ -717,6 +728,7 @@ section {
 }
 
 .pricing-card.popular:hover {
+  transform: translateY(-8px) scale(1.02);
   box-shadow: var(--shadow-lg), var(--shadow-glow);
 }
 
