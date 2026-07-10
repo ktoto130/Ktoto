@@ -2,6 +2,40 @@
    ktoto — Portfolio Script
    ============================================ */
 
+// ── Page Preloader (Lumora Style) ──
+document.body.style.overflow = 'hidden';
+
+const loader = document.getElementById('pageLoader');
+const loaderBar = document.getElementById('loaderBar');
+const loaderCounter = document.getElementById('loaderCounter');
+
+if (loader) {
+  let progress = 0;
+  const duration = 1200; // 1.2 seconds loading time
+  const intervalTime = 15;
+  const step = 100 / (duration / intervalTime);
+
+  const timer = setInterval(() => {
+    progress += step;
+    if (progress >= 100) {
+      progress = 100;
+      clearInterval(timer);
+      
+      if (loaderBar) loaderBar.style.width = '100%';
+      if (loaderCounter) loaderCounter.textContent = '100';
+      
+      setTimeout(() => {
+        loader.classList.add('exit');
+        document.body.style.overflow = ''; // Enable scrolling
+      }, 250);
+    } else {
+      const displayProgress = Math.floor(progress);
+      if (loaderBar) loaderBar.style.width = `${displayProgress}%`;
+      if (loaderCounter) loaderCounter.textContent = displayProgress.toString().padStart(2, '0');
+    }
+  }, intervalTime);
+}
+
 // ── Language System ──
 const translations = {
   en: 'en',

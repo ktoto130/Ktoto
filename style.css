@@ -1102,4 +1102,81 @@ section {
     padding: 4px 8px;
     font-size: 11px;
   }
+
+
+/* ============================================
+   PAGE PRELOADER (Lumora Style)
+   ============================================ */
+.page-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #050507;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 0 32px 32px;
+  transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.4s ease;
+  will-change: transform;
+}
+
+.page-loader.exit {
+  transform: translateY(-100%);
+}
+
+.page-loader__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: opacity 0.3s ease;
+}
+
+.page-loader.exit .page-loader__content {
+  opacity: 0;
+}
+
+.page-loader__brand {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+
+.page-loader__tagline {
+  color: var(--text-tertiary);
+  font-size: 13px;
+  margin-bottom: 32px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.page-loader__bar-wrap {
+  width: min(20rem, 70vw);
+  height: 3px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 100px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.page-loader__bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+  border-radius: 100px;
+  transition: width 0.05s linear;
+}
+
+.page-loader__counter {
+  font-size: 56px;
+  font-weight: 800;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  font-family: var(--font-mono), sans-serif;
 }
