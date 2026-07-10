@@ -263,6 +263,7 @@ function initProjectsCarousel() {
     
     // Soft, premium glide transition curve
     track.style.transition = 'transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)';
+    track.offsetHeight; // Force reflow to prevent snappy dragEnd transitions
     track.style.transform = `translateX(-${amountToMove}px)`;
 
     // Toggle active classes on slides
@@ -395,7 +396,7 @@ function initProjectsCarousel() {
     updateCarousel(currentIndex);
   });
 
-  updateCarousel(0);
+  updateCarousel(1);
 }
 
 
